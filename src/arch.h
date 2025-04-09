@@ -1,3 +1,4 @@
+#pragma once
 #ifndef ARCH_H
 #define ARCH_H
 
@@ -7,13 +8,23 @@
 #include <string.h>
 
 #define MEMORY_SIZE (1024 * 1024)
+
+typedef uint32_t mem_addr_t;
+typedef uint32_t reg_val_t;
+
+
 #define REGISTERS 16 
 #define SP  9
 
+#define STACK_START MEMORY_SIZE - 1
+#define STACK_END MEMORY_SIZE / 2
+
+
 typedef struct {
-    uint8_t memory[MEMORY_SIZE]; 
-    uint32_t registers[REGISTERS];       
-    uint32_t pc;                 
+    uint8_t* memory;
+    size_t memory_size;
+    reg_val_t registers[REGISTERS];       
+    mem_addr_t pc;                 
     uint8_t flag;
 } CPU;
 
@@ -39,7 +50,7 @@ typedef struct {
 #define POP 0x12
 #define HALT 0xFF
 
-void cpu_init(CPU *cpu);
+void cpu_init(CPU *cpu , size_t memory_size);
 void cpu_load_program(CPU *cpu, const uint8_t *program, size_t size);
 void cpu_step(CPU *cpu);
 void cpu_run(CPU *cpu);
